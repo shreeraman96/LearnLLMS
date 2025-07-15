@@ -115,6 +115,7 @@ if __name__ == "__main__":
     # Add vectors to the index
     index.add(embeddings)
     
+    
     faiss_time = time.time() - faiss_start
     print(f"FAISS index created with {index.ntotal} vectors")
     print(f"Index dimension: {index.d}")
