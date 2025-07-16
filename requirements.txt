@@ -1,0 +1,11 @@
+# Core dependencies for RAG implementation
+faiss-cpu>=1.7.4
+sentence-transformers>=2.2.2
+numpy>=1.21.0
+
+# Optional: Use faiss-gpu instead of faiss-cpu for GPU support
+# faiss-gpu>=1.7.4
+
+# Additional useful packages
+torch>=1.9.0
+transformers>=4.20.0 
