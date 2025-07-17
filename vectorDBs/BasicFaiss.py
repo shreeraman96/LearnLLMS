@@ -198,8 +198,7 @@ if __name__ == "__main__":
         print(f"Tokens: {most_similar_metadata['tokens']}")
         print(f"Full Content:\n{most_similar_chunk}")
         print("-" * 50)
-    
-    # Display retrieval performance summary
+        # Display retrieval performance summary
     print(f"\n📊 RETRIEVAL PERFORMANCE SUMMARY:")
     print(f"   Query encoding: {query_encoding_time*1000:.1f} milliseconds")
     print(f"   FAISS search: {search_time*1000:.1f} milliseconds")

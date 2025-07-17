@@ -129,6 +129,7 @@ def main():
         
         # Perform query
         results = rag.query(query, top_k=3, include_metadata=True)
+        print(len(results))
         
         if results:
             for j, result in enumerate(results, 1):
@@ -199,7 +200,7 @@ def main():
     print("="*50)
     
     # Save the system
-    save_path = "example_rag_system"
+    save_path = "./example_rag_system"
     print(f"\nSaving RAG system to: {save_path}")
     if rag.save(save_path):
         print("Successfully saved RAG system")
@@ -210,7 +211,7 @@ def main():
     # Create a new RAG system and load the saved one
     print("\nCreating new RAG system and loading saved data...")
     new_rag = FaissRag()
-    
+    print(save_path)
     if new_rag.load(save_path):
         print("Successfully loaded RAG system")
         

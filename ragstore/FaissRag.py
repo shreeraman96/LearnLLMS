@@ -474,6 +474,7 @@ class FaissRag(BaseRag):
             self.documents = rag_data['documents']
             self.chunk_to_doc = rag_data['chunk_to_doc']
             
+            
             return True
             
         except Exception as e:

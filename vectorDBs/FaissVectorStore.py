@@ -177,7 +177,15 @@ class FaissVectorStore(VectorStore):
         start_index = self.index.ntotal
         
         # Add vectors to FAISS index
-        self.index.add(vectors)
+        # Check if we're using IndexIDMap2 (for normalization)
+        if isinstance(self.index, faiss.IndexIDMap2):
+            # For IndexIDMap2, we need to use add_with_ids
+            # Generate sequential IDs for FAISS (0, 1, 2, ...)
+            faiss_ids = np.arange(start_index, start_index + n_vectors, dtype=np.int64)
+            self.index.add_with_ids(vectors, faiss_ids)
+        else:
+            # For regular indices, use add
+            self.index.add(vectors)
         
         # Store metadata and create mappings
         for i, (vector_id, meta) in enumerate(zip(ids, metadata)):
@@ -225,9 +233,12 @@ class FaissVectorStore(VectorStore):
             raise RuntimeError("FAISS index not initialized")
         
         # Validate query vector dimension
-        if query_vector.shape[0] != self.vector_dimension:
+        if query_vector.ndim == 1:
+            # Reshape if a single vector is provided
+            query_vector = query_vector.reshape(1, -1)
+        if query_vector.shape[1] != self.vector_dimension:
             raise ValueError(
-                f"Query vector dimension {query_vector.shape[0]} does not match index dimension {self.vector_dimension}"
+                f"Query vector dimension {query_vector.shape[1]} does not match index dimension {self.vector_dimension}"
             )
         
         # Normalize query vector if needed
@@ -249,6 +260,8 @@ class FaissVectorStore(VectorStore):
                 
                 results.append(metadata)
                 scores.append(float(distance))
+            else:
+                pass # Removed debug print statements
         
         return results, scores
     
@@ -454,7 +467,8 @@ class FaissVectorStore(VectorStore):
             
             self.metadata_store = load_data['metadata_store']
             self.id_to_index = load_data['id_to_index']
-            self.index_to_id = load_data['index_to_id']
+            # Convert index_to_id keys from strings to integers
+            self.index_to_id = {int(k): v for k, v in load_data['index_to_id'].items()}
             self.embedding_model = load_data['embedding_model']
             self.index_type = load_data['index_type']
             self.vector_dimension = load_data['dimension']
